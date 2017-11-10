@@ -14,7 +14,7 @@ def post_store():
     data = request.get_json()
     store = {
         "name": data["name"],
-        "items": []
+        "items": [] if (data["items"] is None) else data["items"]
     }
     stores.append(store)
     message = "a store %s added!" % store
@@ -37,7 +37,7 @@ def get_stores():
     return json_stores
 
 
-@app.route("/stores/<string:name>/item/", methods=["POST"])
+@app.route("/stores/<string:name>/items", methods=["POST"])
 def post_item(name):
     for store in stores:
         if store["name"] == name:
@@ -46,7 +46,7 @@ def post_item(name):
                 "name": data["name"],
                 "price": data["price"]
             }
-            stores["name"]["items"].append(item)
+            store["items"].append(item)
             message = "an item %s added!" % item
             return jsonify({"message": message})
         else:
@@ -54,7 +54,7 @@ def post_item(name):
             return jsonify({"message": message})
 
 
-@app.route("/stores/<string:name>/item/")
+@app.route("/stores/<string:name>/items/")
 def get_item(name):
     for store in stores:
         if store["name"] == name:
